@@ -1,0 +1,20 @@
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Build
+target/
+
+# OS
+.DS_Store
+
+# Environment
+.env
+.env.local
+
+# OWASP Dependency Check data
+.dependency-check-data/
+
+# Logs
+*.log

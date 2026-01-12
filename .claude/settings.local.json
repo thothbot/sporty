@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bd: *)",
+      "Bash(bd create:*)",
+      "Bash(bd close:*)",
+      "Bash(curl:*)"
+    ]
+  }
+}

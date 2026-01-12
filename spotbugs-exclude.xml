@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <!-- Exclude MapStruct generated code -->
+    <Match>
+        <Class name="~.*MapperImpl"/>
+    </Match>
+    <!-- Exclude test classes -->
+    <Match>
+        <Package name="~.*\.test\..*"/>
+    </Match>
+    <!-- EI_EXPOSE_REP2: False positive for Spring constructor injection -->
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+        <Or>
+            <Class name="com.sporty.jackpot.kafka.KafkaBetProducer"/>
+            <Class name="com.sporty.jackpot.kafka.KafkaBetConsumer"/>
+            <Class name="com.sporty.jackpot.service.JackpotContributionService"/>
+            <Class name="com.sporty.jackpot.service.JackpotRewardService"/>
+        </Or>
+    </Match>
+    <!-- SPRING_ENDPOINT: Informational only, not a bug -->
+    <Match>
+        <Bug pattern="SPRING_ENDPOINT"/>
+    </Match>
+    <!--
+        CRLF_INJECTION_LOGS: Mitigated at framework level.
+        See logback-spring.xml - uses %replace(%msg){'[\r\n]', ' '} pattern
+        to automatically sanitize all log messages at output time.
+        Reference: https://find-sec-bugs.github.io/bugs.htm#CRLF_INJECTION_LOGS
+    -->
+    <Match>
+        <Bug pattern="CRLF_INJECTION_LOGS"/>
+    </Match>
+</FindBugsFilter>

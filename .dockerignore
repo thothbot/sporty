@@ -1,0 +1,8 @@
+target/
+!target/*.jar
+.git/
+.idea/
+*.md
+.env*
+docker-compose*.yml
+.beads/

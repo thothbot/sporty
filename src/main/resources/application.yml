@@ -1,0 +1,78 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: jackpot-service
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  datasource:
+    url: jdbc:h2:mem:jackpotdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      acks: ${KAFKA_PRODUCER_ACKS:1}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: ${KAFKA_CONSUMER_GROUP_ID:jackpot-service}
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.sporty.jackpot.*
+        max.poll.records: ${KAFKA_CONSUMER_MAX_POLL_RECORDS:500}
+
+jackpot:
+  kafka:
+    topic:
+      bets: ${KAFKA_TOPIC_BETS:jackpot-bets}
+      bets-dlq: ${KAFKA_TOPIC_BETS_DLQ:jackpot-bets-dlq}
+      partitions: ${KAFKA_TOPIC_PARTITIONS:10}
+    consumer:
+      concurrency: ${KAFKA_CONSUMER_CONCURRENCY:10}
+      use-virtual-threads: ${KAFKA_CONSUMER_USE_VIRTUAL_THREADS:true}
+    retry:
+      max-attempts: ${KAFKA_RETRY_MAX_ATTEMPTS:3}
+      initial-interval-ms: ${KAFKA_RETRY_INITIAL_INTERVAL_MS:1000}
+      multiplier: ${KAFKA_RETRY_MULTIPLIER:2.0}
+      max-interval-ms: ${KAFKA_RETRY_MAX_INTERVAL_MS:10000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+  info:
+    title: Jackpot Service API
+    description: Backend API for Jackpot contribution and reward management
+    version: 1.0.0
+
+logging:
+  level:
+    root: ${LOG_LEVEL:INFO}
+    com.sporty.jackpot: DEBUG
