@@ -29,7 +29,8 @@ public class RewardController {
 
     private final JackpotRewardService rewardService;
 
-    @Operation(summary = "Evaluate reward", description = "Evaluates if a bet wins a jackpot reward based on configured strategy")
+    @Operation(summary = "Evaluate reward",
+            description = "Evaluates if a bet wins a jackpot reward based on configured strategy")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Reward evaluation completed"),
         @ApiResponse(responseCode = "400", description = "Invalid request data"),
@@ -45,26 +46,23 @@ public class RewardController {
                 request.getJackpotId()
         );
 
-        RewardResponse response;
-        if (reward.isPresent()) {
-            response = RewardResponse.builder()
-                    .betId(request.getBetId())
-                    .userId(request.getUserId())
-                    .jackpotId(request.getJackpotId())
-                    .won(true)
-                    .rewardAmount(reward.get().getRewardAmount())
-                    .message("Congratulations! You won the jackpot!")
-                    .build();
-        } else {
-            response = RewardResponse.builder()
-                    .betId(request.getBetId())
-                    .userId(request.getUserId())
-                    .jackpotId(request.getJackpotId())
-                    .won(false)
-                    .rewardAmount(BigDecimal.ZERO)
-                    .message("Better luck next time!")
-                    .build();
-        }
+        RewardResponse response = reward
+                .map(r -> RewardResponse.builder()
+                        .betId(request.getBetId())
+                        .userId(request.getUserId())
+                        .jackpotId(request.getJackpotId())
+                        .won(true)
+                        .rewardAmount(r.getRewardAmount())
+                        .message("Congratulations! You won the jackpot!")
+                        .build())
+                .orElseGet(() -> RewardResponse.builder()
+                        .betId(request.getBetId())
+                        .userId(request.getUserId())
+                        .jackpotId(request.getJackpotId())
+                        .won(false)
+                        .rewardAmount(BigDecimal.ZERO)
+                        .message("Better luck next time!")
+                        .build());
 
         return ResponseEntity.ok(response);
     }

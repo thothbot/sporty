@@ -4,7 +4,11 @@
       "Bash(bd: *)",
       "Bash(bd create:*)",
       "Bash(bd close:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Skill(beads:ready)",
+      "Skill(beads:ready:*)",
+      "Bash(bd ready:*)",
+      "Bash(bd update:*)"
     ]
   }
 }

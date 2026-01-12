@@ -32,7 +32,8 @@ public class JackpotController {
 
     private final JackpotService jackpotService;
 
-    @Operation(summary = "Create a jackpot", description = "Creates a new jackpot with contribution and reward configuration")
+    @Operation(summary = "Create a jackpot",
+            description = "Creates a new jackpot with contribution and reward configuration")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Jackpot created successfully"),
         @ApiResponse(responseCode = "400", description = "Invalid request data")

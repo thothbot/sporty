@@ -2,20 +2,20 @@
 
 [![CI](https://github.com/thothbot/sporty/actions/workflows/ci.yml/badge.svg)](https://github.com/thothbot/sporty/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/thothbot/sporty/branch/main/graph/badge.svg)](https://codecov.io/gh/thothbot/sporty)
-![Java](https://img.shields.io/badge/Java-21-orange)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.5-brightgreen)
+![Java](https://img.shields.io/badge/Java-25-orange)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.1-brightgreen)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 Backend service for Jackpot contribution and reward management. Designed for high-performance with 10K+ RPS capability.
 
 ## Tech Stack
 
-- **Java 21** with virtual threads
-- **Spring Boot 3.5.5**
+- **Java 25 LTS** with virtual threads
+- **Spring Boot 4.0.1**
 - **Spring Kafka** for async message processing
 - **H2 Database** (in-memory for development)
 - **Docker & Docker Compose**
-- **JUnit 5, Mockito, MockMvc** for testing
+- **JUnit 6, Mockito, MockMvc** for testing
 
 ## Features
 
@@ -27,7 +27,7 @@ Backend service for Jackpot contribution and reward management. Designed for hig
 
 ## Prerequisites
 
-- Java 21+
+- Java 25+
 - Maven 3.9+
 - Docker & Docker Compose
 
@@ -83,8 +83,6 @@ Once running, access interactive API documentation at:
 
 ## Performance Tuning
 
-### For 10K+ RPS
-
 ```bash
 # Increase consumer concurrency and batch size
 export KAFKA_CONSUMER_CONCURRENCY=20
@@ -112,6 +110,50 @@ docker-compose up -d
 # Run with coverage
 ./mvnw verify
 ```
+
+## Load Testing & Kafka Monitoring
+
+Scripts are provided in the `scripts/` directory for load testing and Kafka monitoring.
+
+### Load Test
+
+Run a load test to verify API and Kafka processing:
+
+```bash
+# Run with default 10,000 bets, 100 concurrent workers
+./scripts/load-test.sh
+
+# Custom: 5000 bets, 50 concurrent workers
+./scripts/load-test.sh 5000 50
+
+# Usage: ./scripts/load-test.sh [bets] [concurrency] [base_url] [num_jackpots]
+```
+
+The script will:
+1. Check prerequisites and services
+2. Create test jackpots (or use existing ones)
+3. Send bets in parallel
+4. Monitor Kafka consumer lag until all messages are processed
+5. Report throughput, success rate, and jackpot pool values
+
+### Kafka Monitor
+
+Real-time monitoring of Kafka topics and consumer groups:
+
+```bash
+# Live monitoring (refreshes every 2 seconds)
+./scripts/kafka-monitor.sh
+
+# One-shot status check
+./scripts/kafka-monitor.sh --once
+```
+
+Displays:
+- Topic configuration and partition info
+- Consumer group lag per partition
+- Active consumers
+- Dead Letter Queue (DLQ) messages
+- Broker health status
 
 ## Code Quality
 
@@ -205,25 +247,31 @@ docker-compose down -v
 ## Project Structure
 
 ```
-src/
-├── main/
-│   ├── java/com/sporty/jackpot/
-│   │   ├── config/           # Kafka and app configuration
-│   │   ├── controller/       # REST controllers
-│   │   ├── dto/              # Data transfer objects
-│   │   ├── entity/           # JPA entities
-│   │   ├── exception/        # Custom exceptions
-│   │   ├── kafka/            # Kafka producer/consumer
-│   │   ├── mapper/           # MapStruct mappers
-│   │   ├── repository/       # JPA repositories
-│   │   ├── service/          # Business logic
-│   │   └── strategy/         # Strategy implementations
-│   └── resources/
-│       └── application.yml   # Configuration
-└── test/
-    └── java/com/sporty/jackpot/
-        ├── controller/       # API tests
-        ├── kafka/            # Integration tests
-        ├── service/          # Service tests
-        └── strategy/         # Strategy tests
+├── scripts/
+│   ├── load-test.sh          # Load testing script
+│   └── kafka-monitor.sh      # Kafka monitoring script
+├── src/
+│   ├── main/
+│   │   ├── java/com/sporty/jackpot/
+│   │   │   ├── config/           # Kafka and app configuration
+│   │   │   ├── controller/       # REST controllers
+│   │   │   ├── dto/              # Data transfer objects
+│   │   │   ├── entity/           # JPA entities
+│   │   │   ├── exception/        # Custom exceptions
+│   │   │   ├── kafka/            # Kafka producer/consumer
+│   │   │   ├── mapper/           # MapStruct mappers
+│   │   │   ├── repository/       # JPA repositories
+│   │   │   ├── service/          # Business logic
+│   │   │   └── strategy/         # Strategy implementations
+│   │   └── resources/
+│   │       └── application.yml   # Configuration
+│   └── test/
+│       └── java/com/sporty/jackpot/
+│           ├── controller/       # API tests
+│           ├── kafka/            # Integration tests
+│           ├── service/          # Service tests
+│           └── strategy/         # Strategy tests
+├── docker-compose.yml        # Docker services
+├── Dockerfile                # Multi-stage build
+└── pom.xml                   # Maven configuration
 ```

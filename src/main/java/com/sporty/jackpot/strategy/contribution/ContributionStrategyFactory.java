@@ -19,10 +19,10 @@ public class ContributionStrategyFactory {
     }
 
     public ContributionStrategy getStrategy(ContributionType type) {
-        ContributionStrategy strategy = strategies.get(type);
-        if (strategy == null) {
-            throw new IllegalArgumentException("No contribution strategy found for type: " + type);
-        }
-        return strategy;
+        return switch (strategies.get(type)) {
+            case ContributionStrategy s -> s;
+            case null -> throw new IllegalArgumentException(
+                    "No contribution strategy found for type: " + type);
+        };
     }
 }

@@ -19,10 +19,10 @@ public class RewardStrategyFactory {
     }
 
     public RewardStrategy getStrategy(RewardType type) {
-        RewardStrategy strategy = strategies.get(type);
-        if (strategy == null) {
-            throw new IllegalArgumentException("No reward strategy found for type: " + type);
-        }
-        return strategy;
+        return switch (strategies.get(type)) {
+            case RewardStrategy s -> s;
+            case null -> throw new IllegalArgumentException(
+                    "No reward strategy found for type: " + type);
+        };
     }
 }
