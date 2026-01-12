@@ -1,6 +1,10 @@
 # Jackpot Service
 
 [![CI](https://github.com/thothbot/sporty/actions/workflows/ci.yml/badge.svg)](https://github.com/thothbot/sporty/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/thothbot/sporty/branch/main/graph/badge.svg)](https://codecov.io/gh/thothbot/sporty)
+![Java](https://img.shields.io/badge/Java-21-orange)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.5-brightgreen)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 Backend service for Jackpot contribution and reward management. Designed for high-performance with 10K+ RPS capability.
 
